@@ -1,0 +1,11 @@
+spring:
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:29092}
+  mongodb:
+    uri: ${SPRING_DATA_MONGODB_URI:mongodb://admin:password@mongo:27017/payment?authSource=admin}
+  data:
+    redis:
+      url: ${SPRING_REDIS_URL:redis://redis:6379}
+
+server:
+  port: 8080
