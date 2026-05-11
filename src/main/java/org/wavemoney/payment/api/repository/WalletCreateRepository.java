@@ -14,4 +14,6 @@ public interface WalletCreateRepository extends MongoRepository<Wallet, String> 
 
     Optional<Wallet> findByWalletId(String walletId);
 
+//    Optional<Wallet> findByPhoneNumber(String phoneNumber);
+
 }

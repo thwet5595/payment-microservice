@@ -20,6 +20,7 @@ import org.wavemoney.payment.api.services.TransactionService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -275,9 +276,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionResponseDto.setCurrency(savedWallet.getCurrency());
 
-        transactionResponseDto.setType(TransactionResponseDto.TransactionType.WITHDRAWAL);
+        transactionResponseDto.setPhoneNumber(savedWallet.getPhoneNumber());
 
-        transactionResponseDto.setStatus(TransactionResponseDto.TransactionStatus.COMPLETED);
+        transactionResponseDto.setType(TransactionType.WITHDRAWAL);
+
+        transactionResponseDto.setStatus(TransactionStatus.COMPLETED);
 
         transactionResponseDto.setCreatedAt(LocalDateTime.now());
 
@@ -341,6 +344,74 @@ public class TransactionServiceImpl implements TransactionService {
                 })
                 .toList();
     }
+
+    @Override
+    public TransactionResponseDto transactionDetails(String transactionId) {
+
+        Transaction transaction = transactionRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        // Map the transaction entity to your response DTO
+        TransactionResponseDto responseDto = new TransactionResponseDto();
+        responseDto.setTransactionId(transaction.getTransactionId());
+        responseDto.setFromWalletId(transaction.getFromWalletId());
+        responseDto.setToWalletId(transaction.getToWalletId());
+        responseDto.setAmount(transaction.getAmount());
+        responseDto.setCurrency(transaction.getCurrency());
+        responseDto.setStatus(transaction.getStatus());
+        responseDto.setType(transaction.getType());
+        responseDto.setCreatedAt(transaction.getCreatedAt());
+        responseDto.setCompletedAt(transaction.getCompletedAt());
+
+        return responseDto;
+    }
+
+    @Override
+    public List<TransactionResponseDto> getDailyTransactions() {
+
+        LocalDateTime startOfDay = LocalDateTime.now()
+                .toLocalDate()
+                .atStartOfDay();
+
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+        List<Transaction> transactions =
+                transactionRepository.findByCreatedAtBetween(
+                        startOfDay,
+                        endOfDay
+                );
+
+        List<TransactionResponseDto> responseList = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+
+            TransactionResponseDto dto =
+                    new TransactionResponseDto();
+
+            dto.setTransactionId(transaction.getTransactionId());
+
+            dto.setFromWalletId(transaction.getFromWalletId());
+
+            dto.setToWalletId(transaction.getToWalletId());
+
+            dto.setAmount(transaction.getAmount());
+
+            dto.setCurrency(transaction.getCurrency());
+
+            dto.setStatus(transaction.getStatus());
+
+            dto.setType(transaction.getType());
+
+            dto.setCreatedAt(transaction.getCreatedAt());
+
+            dto.setCompletedAt(transaction.getCompletedAt());
+
+            responseList.add(dto);
+        }
+
+        return responseList;
+    }
+
 
 
 }

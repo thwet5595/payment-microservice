@@ -6,6 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wavemoney.payment.api.dto.*;
+import org.wavemoney.payment.api.dto.DepositRequestDto;
+import org.wavemoney.payment.api.dto.DepositResponseDto;
+import org.wavemoney.payment.api.dto.TransferRequestDto;
+import org.wavemoney.payment.api.dto.TransferResponseDto;
+import org.wavemoney.payment.api.dto.TransactionResponseDto;
+import org.wavemoney.payment.api.dto.WithdrawRequestDto;
 import org.wavemoney.payment.api.services.TransactionService;
 
 import java.util.List;
@@ -27,6 +33,7 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.transferMoney(transferRequestDto));
     }
 
+
     @PostMapping("/withdraw")
     public ResponseEntity<TransactionResponseDto> withdrawMoney(@RequestBody WithdrawRequestDto withdrawRequestDto)
     {
@@ -41,5 +48,23 @@ public class TransactionController {
                 transactionService.getTransactions(walletId)
         );
     }
+
+    @GetMapping("/{transactionId}")
+    public ResponseEntity<TransactionResponseDto> transactionDetails(@PathVariable String transactionId)
+    {
+        return ResponseEntity.ok(transactionService.transactionDetails(transactionId));
+    }
+
+    @GetMapping("/analytics/transactions/daily")
+    public ResponseEntity<List<TransactionResponseDto>>
+    getDailyTransactions() {
+
+        return ResponseEntity.ok(
+                transactionService.getDailyTransactions()
+        );
+    }
+
+
+
 
 }
