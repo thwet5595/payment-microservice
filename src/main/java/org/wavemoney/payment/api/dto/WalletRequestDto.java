@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class WalletRequestDto {
 
     private String userId;
+
+    private String phoneNumber;
 }
