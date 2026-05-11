@@ -1,25 +1,36 @@
 package org.wavemoney.payment.api.services.impl;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.wavemoney.payment.api.dto.WalletRequestDto;
 import org.wavemoney.payment.api.dto.WalletResponseDto;
+import org.wavemoney.payment.api.dto.WalletSummaryResponseDto;
 import org.wavemoney.payment.api.exception.common.ResourceNotFoundException;
+import org.wavemoney.payment.api.model.Transaction;
 import org.wavemoney.payment.api.model.Wallet;
+import org.wavemoney.payment.api.model.enums.TransactionType;
+import org.wavemoney.payment.api.repository.TransactionRepository;
 import org.wavemoney.payment.api.repository.WalletCreateRepository;
 import org.wavemoney.payment.api.services.WalletCreateServices;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class WalletCreateServicesImpl implements WalletCreateServices {
 
     private final WalletCreateRepository walletCreateRepository;
+    private final TransactionRepository transactionRepository;
 
-    public WalletCreateServicesImpl(WalletCreateRepository walletCreateRepository) {
+    public WalletCreateServicesImpl(WalletCreateRepository walletCreateRepository, TransactionRepository transactionRepository) {
         this.walletCreateRepository = walletCreateRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
@@ -69,4 +80,59 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
         return dto;
 
     }
+
+    @Override
+    public WalletSummaryResponseDto getWalletSummary(String walletId) {
+
+        List<Transaction> transactions =
+                transactionRepository.findByFromWalletIdOrToWalletId(walletId, walletId);
+
+        BigDecimal totalDeposits = BigDecimal.ZERO;
+        BigDecimal totalWithdrawals = BigDecimal.ZERO;
+
+        long totalTx = transactions.size();
+
+        for (Transaction tx : transactions) {
+
+            // ✅ Deposit (money coming INTO wallet)
+            if (walletId.equals(tx.getToWalletId())
+                    && tx.getType() == TransactionType.DEPOSIT) {
+
+                totalDeposits = totalDeposits.add(tx.getAmount());
+            }
+
+            // ✅ Withdrawal (money going OUT of wallet)
+            if (walletId.equals(tx.getFromWalletId())
+                    && tx.getType() == TransactionType.WITHDRAWAL) {
+
+                totalWithdrawals = totalWithdrawals.add(tx.getAmount());
+            }
+
+            // 🔥 If you support TRANSFER type (recommended)
+            if (tx.getType() == TransactionType.TRANSFER) {
+
+                if (walletId.equals(tx.getToWalletId())) {
+                    totalDeposits = totalDeposits.add(tx.getAmount());
+                }
+
+                if (walletId.equals(tx.getFromWalletId())) {
+                    totalWithdrawals = totalWithdrawals.add(tx.getAmount());
+                }
+            }
+        }
+
+        BigDecimal currentBalance = totalDeposits.subtract(totalWithdrawals);
+
+        WalletSummaryResponseDto dto = new WalletSummaryResponseDto();
+        dto.setWalletId(walletId);
+        dto.setTotalDeposits(totalDeposits);
+        dto.setTotalWithdrawals(totalWithdrawals);
+        dto.setCurrentBalance(currentBalance);
+        dto.setNetFlow(currentBalance);
+        dto.setTotalTransactions(totalTx);
+
+        return dto;
+    }
+
+
 }
