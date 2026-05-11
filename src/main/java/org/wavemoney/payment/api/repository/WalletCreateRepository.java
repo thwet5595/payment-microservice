@@ -7,9 +7,11 @@ import org.springframework.stereotype.Repository;
 import org.wavemoney.payment.api.dto.WalletResponseDto;
 import org.wavemoney.payment.api.model.Wallet;
 
+import java.util.Optional;
+
 @Repository
 public interface WalletCreateRepository extends MongoRepository<Wallet, String> {
 
-    public Wallet findByWalletId(String walletId);
+    Optional <Wallet> findByWalletId(String walletId);
 
 }

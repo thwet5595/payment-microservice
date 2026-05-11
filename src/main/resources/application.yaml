@@ -3,7 +3,9 @@ spring:
     bootstrap-servers: localhost:9092
   mongodb:
 #    uri: mongodb+srv://intern_user:qEW0aAtKS47EX09N@intern-training-cluster.civpfok.mongodb.net/payment
-    uri: mongodb://admin:password@localhost:27017/payment?authSource=admin
+#    uri: mongodb://admin:password@localhost:27017/payment-local?authSource=payment-local
+#    uri: mongodb://localhost:27017/payment-local
+    uri:  mongodb://admin:password@localhost:27017/payment?authSource=admin
 
   data:
     redis:

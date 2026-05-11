@@ -54,7 +54,7 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
     @Override
     public WalletResponseDto getWalletByWalletId(String walletId) {
 
-        Wallet wallet= walletCreateRepository.findByWalletId(walletId);
+        Wallet wallet= walletCreateRepository.findByWalletId(walletId).orElseThrow();
 
         WalletResponseDto dto= new WalletResponseDto();
 
