@@ -73,4 +73,24 @@ public UserResponseDto getUserById(String id) {
 
     return response;
 }
+
+
+    @Override
+    @Cacheable(value="users", key="#phoneNumber")
+    public UserResponseDto getUserByPhoneNumber(String phoneNumber) {
+
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found with phone: " + phoneNumber));
+
+
+        UserResponseDto response = UserResponseDto.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .build();
+
+        return response;
+    }
 }

@@ -20,9 +20,16 @@ public class UserController {
         return ResponseEntity.ok(userService.createUser(userRequestDto));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable String id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
+
+    @GetMapping("/{phoneNumber}")
+    public ResponseEntity<UserResponseDto> getUserByPhoneNumber(@PathVariable String phoneNumber) {
+        return ResponseEntity.ok(userService.getUserByPhoneNumber(phoneNumber));
+    }
+
+
 
 }

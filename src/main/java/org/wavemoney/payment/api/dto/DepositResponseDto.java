@@ -24,5 +24,7 @@ public class DepositResponseDto implements Serializable {
 
     private BigDecimal balance;
 
-    private LocalDateTime timestamp;
+    private LocalDateTime createdAt;
+
+    private LocalDateTime completedAt;
 }
