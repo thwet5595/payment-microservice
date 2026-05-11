@@ -28,5 +28,7 @@ public class TransactionResponseDto {
 
     private LocalDateTime completedAt;
 
-    private BigDecimal withdrawAmount; // only used for withdraw
+    private BigDecimal withdrawAmount;
+
+    private String phoneNumber;// only used for withdraw
 }

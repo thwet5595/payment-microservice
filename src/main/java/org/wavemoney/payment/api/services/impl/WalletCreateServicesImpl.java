@@ -28,7 +28,8 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
         Wallet wallet = new Wallet();
 
         wallet.setWalletId(UUID.randomUUID().toString());
-        wallet.setUserId(walletRequestDto.getUserId());  //where getUserId came from
+        wallet.setUserId(walletRequestDto.getUserId());
+        wallet.setPhoneNumber(walletRequestDto.getPhoneNumber());//where getUserId came from
         wallet.setBalance(BigDecimal.ZERO);
         wallet.setCurrency("MMK");
         wallet.setStatus("ACTIVE");
@@ -44,7 +45,7 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
 //        dto.setId(savedWallet.getId());
         dto.setWalletId(savedWallet.getWalletId());
         dto.setUserId(savedWallet.getUserId());
-
+        dto.setPhoneNumber(savedWallet.getPhoneNumber());
         dto.setBalance(savedWallet.getBalance());
         dto.setCurrency(savedWallet.getCurrency());
 

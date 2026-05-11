@@ -274,6 +274,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionResponseDto.setCurrency(savedWallet.getCurrency());
 
+        transactionResponseDto.setPhoneNumber(savedWallet.getPhoneNumber());
+
         transactionResponseDto.setType(TransactionType.WITHDRAWAL);
 
         transactionResponseDto.setStatus(TransactionStatus.COMPLETED);
