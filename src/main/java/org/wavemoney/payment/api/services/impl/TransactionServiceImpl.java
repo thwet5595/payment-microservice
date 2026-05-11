@@ -20,6 +20,7 @@ import org.wavemoney.payment.api.services.TransactionService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -365,6 +366,52 @@ public class TransactionServiceImpl implements TransactionService {
         return responseDto;
     }
 
+    @Override
+    public List<TransactionResponseDto> getDailyTransactions() {
 
+        LocalDateTime startOfDay = LocalDateTime.now()
+                .toLocalDate()
+                .atStartOfDay();
 
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+        List<Transaction> transactions =
+                transactionRepository.findByCreatedAtBetween(
+                        startOfDay,
+                        endOfDay
+                );
+
+        List<TransactionResponseDto> responseList = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+
+            TransactionResponseDto dto =
+                    new TransactionResponseDto();
+
+            dto.setTransactionId(transaction.getTransactionId());
+
+            dto.setFromWalletId(transaction.getFromWalletId());
+
+            dto.setToWalletId(transaction.getToWalletId());
+
+            dto.setAmount(transaction.getAmount());
+
+            dto.setCurrency(transaction.getCurrency());
+
+            dto.setStatus(transaction.getStatus());
+
+            dto.setType(transaction.getType());
+
+            dto.setCreatedAt(transaction.getCreatedAt());
+
+            dto.setCompletedAt(transaction.getCompletedAt());
+
+            responseList.add(dto);
+        }
+
+        return responseList;
     }
+
+
+
+}

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.wavemoney.payment.api.model.Transaction;
 import org.wavemoney.payment.api.model.Wallet;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,5 +21,11 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
     List<Transaction> findByFromWalletIdOrToWalletId(String fromWalletId, String toWalletId);
 
     Optional<Transaction> findByTransactionId(String transactionId);
+
+    List<Transaction> findByCreatedAtBetween(
+            LocalDateTime start,
+            LocalDateTime end
+    );
+
 
 }
