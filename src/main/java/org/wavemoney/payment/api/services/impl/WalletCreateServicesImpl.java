@@ -1,8 +1,10 @@
 package org.wavemoney.payment.api.services.impl;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.wavemoney.payment.api.dto.WalletRequestDto;
 import org.wavemoney.payment.api.dto.WalletResponseDto;
+import org.wavemoney.payment.api.exception.common.ResourceNotFoundException;
 import org.wavemoney.payment.api.model.Wallet;
 import org.wavemoney.payment.api.repository.WalletCreateRepository;
 import org.wavemoney.payment.api.services.WalletCreateServices;
@@ -52,14 +54,14 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
     }
 
     @Override
+    @Cacheable(value="wallets", key="#walletId")
     public WalletResponseDto getWalletByWalletId(String walletId) {
 
-        Wallet wallet= walletCreateRepository.findByWalletId(walletId).orElseThrow();
+        Wallet wallet= walletCreateRepository.findByWalletId(walletId)  .orElseThrow(() -> new ResourceNotFoundException("Wallet not found with id: " + walletId));;
 
         WalletResponseDto dto= new WalletResponseDto();
 
         dto.setWalletId(walletId);
-        dto.setBalance(wallet.getBalance());
         dto.setBalance(wallet.getBalance());
         dto.setCurrency(wallet.getCurrency());
         dto.setStatus(wallet.getStatus());

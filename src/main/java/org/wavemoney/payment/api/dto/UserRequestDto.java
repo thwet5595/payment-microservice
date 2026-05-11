@@ -21,11 +21,9 @@ public class UserRequestDto {
 
     @Email(message = "Invalid email format")
     @NotBlank(message="Email is required!")
-    @Indexed(unique = true)
     private String email;
 
     @NotBlank(message="Phone number is required!")
-    @Indexed(unique = true)
     private String phoneNumber;
 
 }

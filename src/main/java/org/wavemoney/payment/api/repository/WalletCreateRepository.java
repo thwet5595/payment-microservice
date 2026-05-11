@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface WalletCreateRepository extends MongoRepository<Wallet, String> {
 
-    Optional <Wallet> findByWalletId(String walletId);
+    Optional<Wallet> findByWalletId(String walletId);
 
 }

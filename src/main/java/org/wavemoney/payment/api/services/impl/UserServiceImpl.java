@@ -2,9 +2,13 @@ package org.wavemoney.payment.api.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.wavemoney.payment.api.dto.UserRequestDto;
 import org.wavemoney.payment.api.dto.UserResponseDto;
+import org.wavemoney.payment.api.exception.validation.BadRequestException;
 import org.wavemoney.payment.api.model.User;
 import org.wavemoney.payment.api.repository.UserRepository;
 import org.wavemoney.payment.api.services.UserService;
@@ -18,10 +22,17 @@ public class UserServiceImpl implements UserService {
 
     // save user
     @Override
+    @CachePut(value = "users", key = "#result.userId")
     public UserResponseDto createUser(
             UserRequestDto userRequestDto) {
 
-        System.out.println("UserServiceImpl createUser");
+        if(userRepository.findByEmail(userRequestDto.getEmail()).isPresent()) {
+            throw new BadRequestException("Email already exists");
+        }
+
+        if(userRepository.findByPhoneNumber(userRequestDto.getPhoneNumber()).isPresent()){
+            throw new BadRequestException("Phone already exists");
+        }
 
         // DTO -> Entity
         User user = User.builder()
@@ -45,6 +56,7 @@ public class UserServiceImpl implements UserService {
 
 //    get user detail information
 @Override
+@Cacheable(value="users", key="#id")
 public UserResponseDto getUserById(String id) {
 
     User user = userRepository.findByUserId(id)
