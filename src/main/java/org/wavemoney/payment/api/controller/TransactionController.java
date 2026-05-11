@@ -4,10 +4,7 @@ package org.wavemoney.payment.api.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.wavemoney.payment.api.dto.DepositRequestDto;
 import org.wavemoney.payment.api.dto.DepositResponseDto;
 import org.wavemoney.payment.api.dto.TransferRequestDto;
@@ -32,12 +29,20 @@ public class TransactionController {
     public ResponseEntity<TransferResponseDto> transfer(@Valid @RequestBody TransferRequestDto transferRequestDto) {
         return ResponseEntity.ok(transactionService.transferMoney(transferRequestDto));
     }
-    public TransactionService transactionService;
+
 
     @PostMapping("/withdraw")
     public ResponseEntity<TransactionResponseDto> withdrawMoney(@RequestBody WithdrawRequestDto withdrawRequestDto)
     {
         return ResponseEntity.ok(transactionService.withdrawMoney(withdrawRequestDto));
     }
+
+    @GetMapping("/{transactionId}")
+    public ResponseEntity<TransactionResponseDto> transactionDetails(@PathVariable String transactionId)
+    {
+        return ResponseEntity.ok(transactionService.transactionDetails(transactionId));
+    }
+
+
 
 }
