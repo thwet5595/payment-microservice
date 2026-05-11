@@ -12,6 +12,8 @@ import org.wavemoney.payment.api.dto.DepositRequestDto;
 import org.wavemoney.payment.api.dto.DepositResponseDto;
 import org.wavemoney.payment.api.dto.TransferRequestDto;
 import org.wavemoney.payment.api.dto.TransferResponseDto;
+import org.wavemoney.payment.api.dto.TransactionResponseDto;
+import org.wavemoney.payment.api.dto.WithdrawRequestDto;
 import org.wavemoney.payment.api.services.TransactionService;
 
 @RestController
@@ -30,4 +32,12 @@ public class TransactionController {
     public ResponseEntity<TransferResponseDto> transfer(@Valid @RequestBody TransferRequestDto transferRequestDto) {
         return ResponseEntity.ok(transactionService.transferMoney(transferRequestDto));
     }
+    public TransactionService transactionService;
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<TransactionResponseDto> withdrawMoney(@RequestBody WithdrawRequestDto withdrawRequestDto)
+    {
+        return ResponseEntity.ok(transactionService.withdrawMoney(withdrawRequestDto));
+    }
+
 }

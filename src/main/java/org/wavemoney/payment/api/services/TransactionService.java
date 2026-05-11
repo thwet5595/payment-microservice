@@ -17,4 +17,7 @@ public interface TransactionService{
     TransferResponseDto transferMoney(TransferRequestDto request);
 
 
+
+    TransactionResponseDto withdrawMoney(WithdrawRequestDto withdrawRequestDto);
+
 }
