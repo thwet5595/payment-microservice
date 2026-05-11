@@ -275,9 +275,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionResponseDto.setCurrency(savedWallet.getCurrency());
 
-        transactionResponseDto.setType(TransactionResponseDto.TransactionType.WITHDRAWAL);
+        transactionResponseDto.setPhoneNumber(savedWallet.getPhoneNumber());
 
-        transactionResponseDto.setStatus(TransactionResponseDto.TransactionStatus.COMPLETED);
+        transactionResponseDto.setType(TransactionType.WITHDRAWAL);
+
+        transactionResponseDto.setStatus(TransactionStatus.COMPLETED);
 
         transactionResponseDto.setCreatedAt(LocalDateTime.now());
 
@@ -342,5 +344,27 @@ public class TransactionServiceImpl implements TransactionService {
                 .toList();
     }
 
+    @Override
+    public TransactionResponseDto transactionDetails(String transactionId) {
 
-}
+        Transaction transaction = transactionRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        // Map the transaction entity to your response DTO
+        TransactionResponseDto responseDto = new TransactionResponseDto();
+        responseDto.setTransactionId(transaction.getTransactionId());
+        responseDto.setFromWalletId(transaction.getFromWalletId());
+        responseDto.setToWalletId(transaction.getToWalletId());
+        responseDto.setAmount(transaction.getAmount());
+        responseDto.setCurrency(transaction.getCurrency());
+        responseDto.setStatus(transaction.getStatus());
+        responseDto.setType(transaction.getType());
+        responseDto.setCreatedAt(transaction.getCreatedAt());
+        responseDto.setCompletedAt(transaction.getCompletedAt());
+
+        return responseDto;
+    }
+
+
+
+    }

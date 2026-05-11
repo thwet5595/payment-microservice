@@ -1,16 +1,20 @@
 package org.wavemoney.payment.api.dto;
 
-
 import lombok.Data;
+import org.wavemoney.payment.api.model.enums.TransactionStatus;
+import org.wavemoney.payment.api.model.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 @Data
 public class TransactionResponseDto {
 
     private String transactionId;
 
     private String fromWalletId;
+
+    private String toWalletId;
 
     private String currency;
 
@@ -26,16 +30,5 @@ public class TransactionResponseDto {
 
     private BigDecimal withdrawAmount;
 
-    public enum TransactionType {
-        DEPOSIT,
-        WITHDRAWAL,
-        TRANSFER
-    }
-
-    public enum TransactionStatus {
-        PENDING,
-        COMPLETED,
-        FAILED
-    }
-
+    private String phoneNumber;// only used for withdraw
 }

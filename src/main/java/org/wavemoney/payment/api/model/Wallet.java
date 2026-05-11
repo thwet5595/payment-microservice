@@ -26,6 +26,8 @@ public class Wallet {
 
     private String currency;
 
+    private String phoneNumber;
+
     private String status; // ACTIVE, FROZEN, CLOSED
 
     private LocalDateTime createdAt;

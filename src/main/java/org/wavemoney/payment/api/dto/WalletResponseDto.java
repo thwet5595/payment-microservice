@@ -13,6 +13,7 @@ public class WalletResponseDto implements Serializable {
 
     private String walletId;      // UUID
     private String userId;
+    private String phoneNumber;
 
     private BigDecimal balance;
     private String currency;      // USD, EUR, etc.

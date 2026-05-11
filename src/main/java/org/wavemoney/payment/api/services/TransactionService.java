@@ -17,4 +17,6 @@ public interface TransactionService{
     TransactionResponseDto withdrawMoney(WithdrawRequestDto withdrawRequestDto);
 
     List<TransactionHistoryResponse> getTransactions(String walletId);
+    TransactionResponseDto transactionDetails(String transactionId);
+
 }
