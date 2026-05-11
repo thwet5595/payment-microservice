@@ -97,6 +97,5 @@ public class Transaction {
     private LocalDateTime createdAt;
 
     private LocalDateTime completedAt;
-    @CreatedDate
-    private LocalDateTime timestamp;
+
 }

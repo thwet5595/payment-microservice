@@ -28,5 +28,7 @@ public class TransferResponseDto {
 
     private BigDecimal receiverBalance;
 
-    private LocalDateTime timestamp;
+    private LocalDateTime createdAt;
+
+    private LocalDateTime completedAt;
 }

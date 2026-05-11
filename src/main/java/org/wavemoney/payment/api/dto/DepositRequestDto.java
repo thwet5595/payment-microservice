@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class DepositRequestDto {
 
+    private String phoneNumber;
+
     private String walletId;
 
     private BigDecimal amount;

@@ -9,12 +9,15 @@ import org.springframework.stereotype.Repository;
 import org.wavemoney.payment.api.model.Transaction;
 import org.wavemoney.payment.api.model.Wallet;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface TransactionRepository extends MongoRepository<Transaction, String> {
 
     Optional<Transaction> findByFromWalletId(String walletId);
+
+    List<Transaction> findByFromWalletIdOrToWalletId(String fromWalletId, String toWalletId);
 
 
 }

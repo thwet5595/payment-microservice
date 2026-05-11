@@ -9,4 +9,5 @@ public interface UserService
 {
      UserResponseDto createUser(UserRequestDto user);
      UserResponseDto getUserById(String id);
+     UserResponseDto getUserByPhoneNumber(String phoneNumber);
 }

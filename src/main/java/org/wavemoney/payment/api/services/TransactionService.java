@@ -1,11 +1,9 @@
 package org.wavemoney.payment.api.services;
 
 import org.springframework.stereotype.Service;
-import org.wavemoney.payment.api.dto.DepositRequestDto;
-import org.wavemoney.payment.api.dto.DepositResponseDto;
-import org.wavemoney.payment.api.dto.TransferRequestDto;
-import org.wavemoney.payment.api.dto.TransferResponseDto;
+import org.wavemoney.payment.api.dto.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,8 +14,7 @@ public interface TransactionService{
 
     TransferResponseDto transferMoney(TransferRequestDto request);
 
-
-
     TransactionResponseDto withdrawMoney(WithdrawRequestDto withdrawRequestDto);
 
+    List<TransactionHistoryResponse> getTransactions(String walletId);
 }

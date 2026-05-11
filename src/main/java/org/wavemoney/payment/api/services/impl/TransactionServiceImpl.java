@@ -1,18 +1,14 @@
 package org.wavemoney.payment.api.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.wavemoney.payment.api.dto.DepositRequestDto;
-import org.wavemoney.payment.api.dto.DepositResponseDto;
-import org.wavemoney.payment.api.dto.TransferRequestDto;
-import org.wavemoney.payment.api.dto.TransferResponseDto;
+import org.wavemoney.payment.api.dto.*;
 import org.wavemoney.payment.api.exception.common.ResourceNotFoundException;
 import org.wavemoney.payment.api.exception.validation.BadRequestException;
 import org.springframework.stereotype.Service;
-import org.wavemoney.payment.api.dto.TransactionResponseDto;
-import org.wavemoney.payment.api.dto.WithdrawRequestDto;
 import org.wavemoney.payment.api.model.Transaction;
 import org.wavemoney.payment.api.model.Wallet;
 import org.wavemoney.payment.api.model.enums.TransactionStatus;
@@ -24,6 +20,7 @@ import org.wavemoney.payment.api.services.TransactionService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,6 +31,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private WalletCreateRepository walletCreateRepository;
 
+    @CacheEvict(value = "wallets", key = "#request.walletId")
     @Override
     @Transactional
     public DepositResponseDto deposit(DepositRequestDto request) {
@@ -74,7 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .currency(request.getCurrency())
                 .type(TransactionType.DEPOSIT)
                 .status(TransactionStatus.PENDING)
-                .timestamp(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         transactionRepository.save(transaction);
@@ -90,6 +88,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         // update transaction status
         transaction.setStatus(TransactionStatus.COMPLETED);
+        transaction.setCompletedAt(LocalDateTime.now());
 
         transactionRepository.save(transaction);
 
@@ -107,8 +106,9 @@ public class TransactionServiceImpl implements TransactionService {
                 .currency(transaction.getCurrency())
                 .balance(wallet.getBalance())
                 .status(transaction.getStatus().name())
-                .timestamp(transaction.getTimestamp())
                 .type(transaction.getType().name())
+                .createdAt(transaction.getCreatedAt())
+                .completedAt(transaction.getCompletedAt())
                 .build();
     }
 
@@ -190,7 +190,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .currency(request.getCurrency())
                 .type(TransactionType.TRANSFER)
                 .status(TransactionStatus.PENDING)
-                .timestamp(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         transactionRepository.save(transaction);
@@ -210,7 +210,7 @@ public class TransactionServiceImpl implements TransactionService {
         walletCreateRepository.save(receiver);
 
         transaction.setStatus(TransactionStatus.COMPLETED);
-
+        transaction.setCompletedAt(LocalDateTime.now());
         transactionRepository.save(transaction);
 
         return TransferResponseDto.builder()
@@ -223,7 +223,8 @@ public class TransactionServiceImpl implements TransactionService {
                 .status(transaction.getStatus().name())
                 .senderBalance(sender.getBalance())
                 .receiverBalance(receiver.getBalance())
-                .timestamp(transaction.getTimestamp())
+                .createdAt(transaction.getCreatedAt())
+                .completedAt(transaction.getCompletedAt())
                 .build();
 
     }
@@ -298,6 +299,47 @@ public class TransactionServiceImpl implements TransactionService {
 
         transactionRepository.save(transaction);
         return transactionResponseDto;
+    }
+
+    // get transaction history
+    @Override
+    public List<TransactionHistoryResponse> getTransactions(String walletId) {
+
+        List<Transaction> transactions =
+                transactionRepository.findByFromWalletIdOrToWalletId(walletId, walletId);
+
+        return transactions.stream()
+                .map(tx -> {
+
+                    String role = switch (tx.getType()) {
+
+                        case DEPOSIT -> "RECEIVED";
+
+                        case WITHDRAWAL -> "SENT";
+
+                        case TRANSFER -> {
+                            if (walletId.equals(tx.getFromWalletId())) {
+                                yield "SENT";
+                            } else {
+                                yield "RECEIVED";
+                            }
+                        }
+                    };
+
+                    return TransactionHistoryResponse.builder()
+                            .transactionId(tx.getTransactionId())
+                            .type(tx.getType())
+                            .status(tx.getStatus())
+                            .amount(tx.getAmount())
+                            .currency(tx.getCurrency())
+                            .fromWalletId(tx.getFromWalletId())
+                            .toWalletId(tx.getToWalletId())
+                            .role(role)
+                            .createdAt(tx.getCreatedAt())
+                            .completedAt(tx.getCompletedAt())
+                            .build();
+                })
+                .toList();
     }
 
 
