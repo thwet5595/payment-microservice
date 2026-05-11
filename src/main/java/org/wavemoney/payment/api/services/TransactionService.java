@@ -18,5 +18,6 @@ public interface TransactionService{
 
     List<TransactionHistoryResponse> getTransactions(String walletId);
     TransactionResponseDto transactionDetails(String transactionId);
+    List<TransactionResponseDto> getDailyTransactions();
 
 }

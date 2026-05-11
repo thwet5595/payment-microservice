@@ -55,6 +55,16 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.transactionDetails(transactionId));
     }
 
+    @GetMapping("/analytics/transactions/daily")
+    public ResponseEntity<List<TransactionResponseDto>>
+    getDailyTransactions() {
+
+        return ResponseEntity.ok(
+                transactionService.getDailyTransactions()
+        );
+    }
+
+
 
 
 }
