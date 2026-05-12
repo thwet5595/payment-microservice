@@ -30,5 +30,7 @@ public class TransactionResponseDto {
 
     private BigDecimal withdrawAmount;
 
-    private String phoneNumber;// only used for withdraw
+    private String fromPhoneNumber;
+
+    private String toPhoneNumber;
 }

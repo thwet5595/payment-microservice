@@ -2,7 +2,8 @@ package org.wavemoney.payment.api.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -12,13 +13,21 @@ import org.wavemoney.payment.api.exception.validation.BadRequestException;
 import org.wavemoney.payment.api.model.User;
 import org.wavemoney.payment.api.repository.UserRepository;
 import org.wavemoney.payment.api.services.UserService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+
+
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CacheManager cacheManager;
+
+
 
     // save user
     @Override
@@ -59,6 +68,9 @@ public class UserServiceImpl implements UserService {
 @Cacheable(value="users", key="#id")
 public UserResponseDto getUserById(String id) {
 
+
+    log.info("👉 DB CALL EXECUTED for userId: {}", id);
+
     User user = userRepository.findByUserId(id)
             .orElseThrow(() ->
                     new RuntimeException("User not found with id: " + id));
@@ -73,6 +85,17 @@ public UserResponseDto getUserById(String id) {
 
     return response;
 }
+
+    public void logCacheStatus(String id) {
+
+        Cache cache = cacheManager.getCache("users");
+
+        if (cache != null && cache.get(id) != null) {
+            log.info("🔥 CACHE HIT for userId: {}", id);
+        } else {
+            log.info("❌ CACHE MISS for userId: {}", id);
+        }
+    }
 
 
     @Override
