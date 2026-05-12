@@ -270,8 +270,6 @@ public class TransactionServiceImpl implements TransactionService {
 
 
         // 5. Save transaction to DB
-
-
         Wallet savedWallet = walletCreateRepository.save(wallet);
 
         TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
@@ -302,6 +300,8 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setToWalletId(null); // null for withdrawal
         transaction.setAmount(withdrawRequestDto.getAmount());
         transaction.setCurrency(savedWallet.getCurrency());
+        transaction.setFromPhoneNumber(savedWallet.getPhoneNumber());
+        //transaction.setToPhoneNumber(savedWallet.getPhoneNumber());
         transaction.setType(TransactionType.WITHDRAWAL);
         transaction.setStatus(TransactionStatus.COMPLETED);
         transaction.setDescription("Withdrawal from wallet");
@@ -369,6 +369,8 @@ public class TransactionServiceImpl implements TransactionService {
         responseDto.setFromPhoneNumber(transaction.getFromPhoneNumber());
         responseDto.setToPhoneNumber(transaction.getToPhoneNumber());
         responseDto.setAmount(transaction.getAmount());
+        responseDto.setFromPhoneNumber(transaction.getFromPhoneNumber());
+        responseDto.setToPhoneNumber(transaction.getToPhoneNumber());
         responseDto.setCurrency(transaction.getCurrency());
         responseDto.setStatus(transaction.getStatus());
         responseDto.setType(transaction.getType());
@@ -413,6 +415,10 @@ public class TransactionServiceImpl implements TransactionService {
             dto.setAmount(transaction.getAmount());
 
             dto.setCurrency(transaction.getCurrency());
+
+            dto.setFromPhoneNumber(transaction.getFromPhoneNumber());
+
+            dto.setToPhoneNumber(transaction.getToPhoneNumber());
 
             dto.setStatus(transaction.getStatus());
 

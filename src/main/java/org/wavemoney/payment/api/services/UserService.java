@@ -7,6 +7,7 @@ import org.wavemoney.payment.api.dto.UserResponseDto;
 @Service
 public interface UserService
 {
+     void logCacheStatus(String id);
      UserResponseDto createUser(UserRequestDto user);
      UserResponseDto getUserById(String id);
      UserResponseDto getUserByPhoneNumber(String phoneNumber);

@@ -18,9 +18,9 @@ public class WalletController {
         return ResponseEntity.ok(walletCreateServices.createWallet(walletRequestDto));
     }
 
-    @GetMapping("/api/wallet/{walletId}")
-    public ResponseEntity<WalletResponseDto> getWallet(@PathVariable String walletId) {
-        return ResponseEntity.ok(walletCreateServices.getWalletByWalletId(walletId));
+    @GetMapping("/api/wallet/{phoneNumber}")
+    public ResponseEntity<WalletResponseDto> getWallet(@PathVariable String phoneNumber) {
+        return ResponseEntity.ok(walletCreateServices.getWallet(phoneNumber));
     }
 
 

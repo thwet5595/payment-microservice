@@ -7,8 +7,7 @@ import org.wavemoney.payment.api.dto.WalletSummaryResponseDto;
 public interface WalletCreateServices {
 
     WalletResponseDto createWallet(WalletRequestDto walletRequestDto);
-
-    WalletResponseDto getWalletByWalletId(String walletId);
-
-    WalletSummaryResponseDto getWalletSummary(String phoneNumber);
+    //WalletResponseDto getWalletByWalletId(String walletId);
+    WalletResponseDto getWallet(String phoneNumber);
+    WalletSummaryResponseDto getWalletSummary(String walletId);
 }

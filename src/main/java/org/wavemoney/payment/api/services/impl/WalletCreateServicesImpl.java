@@ -66,15 +66,17 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
     }
 
     @Override
-    @Cacheable(value="wallets", key="#walletId")
-    public WalletResponseDto getWalletByWalletId(String walletId) {
+    @Cacheable(value="wallets", key="#phoneNumber")
+    public WalletResponseDto getWallet(String phoneNumber) {
 
-        Wallet wallet= walletCreateRepository.findByWalletId(walletId)  .orElseThrow(() -> new ResourceNotFoundException("Wallet not found with id: " + walletId));;
+        Wallet wallet= walletCreateRepository.findByPhoneNumber(phoneNumber)  .orElseThrow(() -> new ResourceNotFoundException("Wallet not found with phone number: " + phoneNumber));;
 
         WalletResponseDto dto= new WalletResponseDto();
 
-        dto.setWalletId(walletId);
+        dto.setWalletId(wallet.getWalletId());
+        dto.setUserId(wallet.getUserId());
         dto.setBalance(wallet.getBalance());
+        dto.setPhoneNumber(wallet.getPhoneNumber());
         dto.setCurrency(wallet.getCurrency());
         dto.setStatus(wallet.getStatus());
 
