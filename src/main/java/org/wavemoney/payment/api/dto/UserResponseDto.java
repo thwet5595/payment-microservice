@@ -24,9 +24,4 @@ public class UserResponseDto implements Serializable {
     private String address;
     private String city;
     private String zipCode;
-
-    private String frontId;
-    private String backId;
-    private String selfie;
-
 }

@@ -83,10 +83,10 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
     }
 
     @Override
-    public WalletSummaryResponseDto getWalletSummary(String walletId) {
+    public WalletSummaryResponseDto getWalletSummary(String phoneNumber) {
 
         List<Transaction> transactions =
-                transactionRepository.findByFromWalletIdOrToWalletId(walletId, walletId);
+                transactionRepository.findByFromPhoneNumberOrToPhoneNumber(phoneNumber, phoneNumber);
 
         BigDecimal totalDeposits = BigDecimal.ZERO;
         BigDecimal totalWithdrawals = BigDecimal.ZERO;
@@ -96,14 +96,14 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
         for (Transaction tx : transactions) {
 
             // ✅ Deposit (money coming INTO wallet)
-            if (walletId.equals(tx.getToWalletId())
+            if (phoneNumber.equals(tx.getToPhoneNumber())
                     && tx.getType() == TransactionType.DEPOSIT) {
 
                 totalDeposits = totalDeposits.add(tx.getAmount());
             }
 
             // ✅ Withdrawal (money going OUT of wallet)
-            if (walletId.equals(tx.getFromWalletId())
+            if (phoneNumber.equals(tx.getFromPhoneNumber())
                     && tx.getType() == TransactionType.WITHDRAWAL) {
 
                 totalWithdrawals = totalWithdrawals.add(tx.getAmount());
@@ -112,11 +112,11 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
             // 🔥 If you support TRANSFER type (recommended)
             if (tx.getType() == TransactionType.TRANSFER) {
 
-                if (walletId.equals(tx.getToWalletId())) {
+                if (phoneNumber.equals(tx.getToPhoneNumber())) {
                     totalDeposits = totalDeposits.add(tx.getAmount());
                 }
 
-                if (walletId.equals(tx.getFromWalletId())) {
+                if (phoneNumber.equals(tx.getFromPhoneNumber())) {
                     totalWithdrawals = totalWithdrawals.add(tx.getAmount());
                 }
             }
@@ -125,7 +125,7 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
         BigDecimal currentBalance = totalDeposits.subtract(totalWithdrawals);
 
         WalletSummaryResponseDto dto = new WalletSummaryResponseDto();
-        dto.setWalletId(walletId);
+        dto.setPhoneNumber(phoneNumber);
         dto.setTotalDeposits(totalDeposits);
         dto.setTotalWithdrawals(totalWithdrawals);
         dto.setCurrentBalance(currentBalance);

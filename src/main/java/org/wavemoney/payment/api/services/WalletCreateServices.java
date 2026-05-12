@@ -10,5 +10,5 @@ public interface WalletCreateServices {
 
     WalletResponseDto getWalletByWalletId(String walletId);
 
-    WalletSummaryResponseDto getWalletSummary(String walletId);
+    WalletSummaryResponseDto getWalletSummary(String phoneNumber);
 }

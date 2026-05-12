@@ -40,12 +40,12 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.withdrawMoney(withdrawRequestDto));
     }
 
-    @GetMapping("/{walletId}/history")
+    @GetMapping("/{phoneNumber}/history")
     public ResponseEntity<List<TransactionHistoryResponse>> getTransactions(
-            @PathVariable String walletId
+            @PathVariable String phoneNumber
     ) {
         return ResponseEntity.ok(
-                transactionService.getTransactions(walletId)
+                transactionService.getTransactions(phoneNumber)
         );
     }
 

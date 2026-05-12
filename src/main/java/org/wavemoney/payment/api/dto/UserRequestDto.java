@@ -40,13 +40,5 @@ public class UserRequestDto {
     @NotBlank(message = "Zip code is required!")
     private String zipCode;
 
-    @NotBlank(message = "Front ID image is required!")
-    private String frontId;
-
-    @NotBlank(message = "Back ID image is required!")
-    private String backId;
-
-    @NotBlank(message = "Selfie image is required!")
-    private String selfie;
 
 }

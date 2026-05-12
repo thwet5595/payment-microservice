@@ -18,10 +18,10 @@ public class AnalyticController {
         this.walletCreateServices = walletCreateServices;
     }
 
-    @GetMapping("/{walletId}/summary")
+    @GetMapping("/{phoneNumber}/summary")
     public ResponseEntity<WalletSummaryResponseDto> getSummary(
-            @PathVariable String walletId) {
+            @PathVariable String phoneNumber) {
 
-        return ResponseEntity.ok(walletCreateServices.getWalletSummary(walletId));
+        return ResponseEntity.ok(walletCreateServices.getWalletSummary(phoneNumber));
     }
 }
