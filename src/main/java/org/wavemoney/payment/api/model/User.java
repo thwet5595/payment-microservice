@@ -29,6 +29,15 @@ public class User {
     @Indexed(unique = true)
     private String phoneNumber;
 
+    private String firstName;
+    private String lastName;
+    private String address;
+    private String city;
+    private String zipCode;
+    private String frontId;
+    private String backId;
+    private String selfie;
+
     @Builder.Default
     private Instant createdAt = Instant.now();
 
