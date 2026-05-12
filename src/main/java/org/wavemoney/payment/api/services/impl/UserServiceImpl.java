@@ -23,14 +23,13 @@ public class UserServiceImpl implements UserService {
     // save user
     @Override
     @CachePut(value = "users", key = "#result.userId")
-    public UserResponseDto createUser(
-            UserRequestDto userRequestDto) {
+    public UserResponseDto createUser(UserRequestDto userRequestDto) {
 
-        if(userRepository.findByEmail(userRequestDto.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(userRequestDto.getEmail()).isPresent()) {
             throw new BadRequestException("Email already exists");
         }
 
-        if(userRepository.findByPhoneNumber(userRequestDto.getPhoneNumber()).isPresent()){
+        if (userRepository.findByPhoneNumber(userRequestDto.getPhoneNumber()).isPresent()) {
             throw new BadRequestException("Phone already exists");
         }
 
@@ -39,19 +38,34 @@ public class UserServiceImpl implements UserService {
                 .name(userRequestDto.getName())
                 .email(userRequestDto.getEmail())
                 .phoneNumber(userRequestDto.getPhoneNumber())
+                .firstName(userRequestDto.getFirstName())
+                .lastName(userRequestDto.getLastName())
+                .address(userRequestDto.getAddress())
+                .city(userRequestDto.getCity())
+                .zipCode(userRequestDto.getZipCode())
+                .frontId(userRequestDto.getFrontId())
+                .backId(userRequestDto.getBackId())
+                .selfie(userRequestDto.getSelfie())
                 .build();
 
         // Save to MongoDB
         User savedUser = userRepository.save(user);
 
         // Entity -> Response DTO
-        UserResponseDto response = UserResponseDto.builder()
-                                    .name(savedUser.getName())
-                                    .email(savedUser.getEmail())
-                                    .phoneNumber(savedUser.getPhoneNumber())
-                                    .userId(savedUser.getUserId())
-                                    .build();
-        return response;
+        return UserResponseDto.builder()
+                .userId(savedUser.getUserId())
+                .name(savedUser.getName())
+                .email(savedUser.getEmail())
+                .phoneNumber(savedUser.getPhoneNumber())
+                .firstName(savedUser.getFirstName())
+                .lastName(savedUser.getLastName())
+                .address(savedUser.getAddress())
+                .city(savedUser.getCity())
+                .zipCode(savedUser.getZipCode())
+                .frontId(savedUser.getFrontId())
+                .backId(savedUser.getBackId())
+                .selfie(savedUser.getSelfie())
+                .build();
     }
 
 //    get user detail information
@@ -69,6 +83,14 @@ public UserResponseDto getUserById(String id) {
             .name(user.getName())
             .email(user.getEmail())
             .phoneNumber(user.getPhoneNumber())
+            .firstName(user.getFirstName())
+            .lastName(user.getLastName())
+            .address(user.getAddress())
+            .city(user.getCity())
+            .zipCode(user.getZipCode())
+            .frontId(user.getFrontId())
+            .backId(user.getBackId())
+            .selfie(user.getSelfie())
             .build();
 
     return response;
@@ -89,6 +111,14 @@ public UserResponseDto getUserById(String id) {
                 .name(user.getName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .address(user.getAddress())
+                .city(user.getCity())
+                .zipCode(user.getZipCode())
+                .frontId(user.getFrontId())
+                .backId(user.getBackId())
+                .selfie(user.getSelfie())
                 .build();
 
         return response;
