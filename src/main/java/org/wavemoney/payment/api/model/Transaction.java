@@ -85,6 +85,10 @@ public class Transaction {
 
     private String toWalletId;
 
+    private String fromPhoneNumber;
+
+    private String toPhoneNumber;
+
     private BigDecimal amount;
 
     private String currency;

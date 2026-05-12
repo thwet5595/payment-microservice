@@ -22,6 +22,7 @@ public class UserController {
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable String id) {
+        userService.logCacheStatus(id);
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
