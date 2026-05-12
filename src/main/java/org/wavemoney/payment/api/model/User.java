@@ -34,9 +34,6 @@ public class User {
     private String address;
     private String city;
     private String zipCode;
-    private String frontId;
-    private String backId;
-    private String selfie;
 
     @Builder.Default
     private Instant createdAt = Instant.now();

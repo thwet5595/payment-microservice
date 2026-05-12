@@ -45,11 +45,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         // find wallet
         Wallet wallet = walletCreateRepository
-                .findByWalletId(request.getWalletId())
+                .findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Wallet not found with id: "
-                                        + request.getWalletId()
+                                "Wallet not found with phone: "
+                                        + request.getPhoneNumber()
                         )
                 );
 
@@ -68,7 +68,10 @@ public class TransactionServiceImpl implements TransactionService {
         // create pending transaction
         Transaction transaction = Transaction.builder()
                 .transactionId(UUID.randomUUID().toString())
+                .fromWalletId(wallet.getWalletId())
                 .toWalletId(wallet.getWalletId())
+                .fromPhoneNumber(wallet.getPhoneNumber())
+                .toPhoneNumber(wallet.getPhoneNumber())
                 .amount(request.getAmount())
                 .currency(request.getCurrency())
                 .type(TransactionType.DEPOSIT)
@@ -103,6 +106,7 @@ public class TransactionServiceImpl implements TransactionService {
         return DepositResponseDto.builder()
                 .transactionId(transaction.getTransactionId())
                 .walletId(wallet.getWalletId())
+                .phoneNumber(wallet.getPhoneNumber())
                 .amount(transaction.getAmount())
                 .currency(transaction.getCurrency())
                 .balance(wallet.getBalance())
@@ -116,14 +120,14 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransferResponseDto transferMoney(TransferRequestDto request){
-        //here even if don't check request's amount dto handle it and throw badreqerror but not message included
+        //here even if don't check request's amount dto handle it and throw bad req error but not message included
         if(request.getAmount().compareTo(BigDecimal.ZERO) <= 0){
             throw new BadRequestException("Amount must be greater than zero");
         }
 
         // prevent self transfer
-        if (request.getFromWalletId()
-                .equals(request.getToWalletId())) {
+        if (request.getFromPhoneNumber()
+                .equals(request.getToPhoneNumber())) {
 
             throw new BadRequestException(
                     "Cannot transfer to same wallet"
@@ -132,7 +136,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         // find both wallets
         Wallet sender = walletCreateRepository
-                .findByWalletId(request.getFromWalletId())
+                .findByWalletId(request.getFromPhoneNumber())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Sender wallet not found"
@@ -140,7 +144,7 @@ public class TransactionServiceImpl implements TransactionService {
                 );
 
         Wallet receiver = walletCreateRepository
-                .findByWalletId(request.getToWalletId())
+                .findByWalletId(request.getToPhoneNumber())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Receiver wallet not found"
@@ -187,6 +191,8 @@ public class TransactionServiceImpl implements TransactionService {
                 .transactionId(UUID.randomUUID().toString())
                 .fromWalletId(sender.getWalletId())
                 .toWalletId(receiver.getWalletId())
+                .fromPhoneNumber(sender.getPhoneNumber())
+                .toPhoneNumber(receiver.getPhoneNumber())
                 .amount(request.getAmount())
                 .currency(request.getCurrency())
                 .type(TransactionType.TRANSFER)
@@ -218,6 +224,8 @@ public class TransactionServiceImpl implements TransactionService {
                 .transactionId(transaction.getTransactionId())
                 .fromWalletId(sender.getWalletId())
                 .toWalletId(receiver.getWalletId())
+                .fromPhoneNumber(sender.getPhoneNumber())
+                .toPhoneNumber(receiver.getPhoneNumber())
                 .amount(transaction.getAmount())
                 .currency(transaction.getCurrency())
                 .type(TransactionType.TRANSFER)
@@ -306,10 +314,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     // get transaction history
     @Override
-    public List<TransactionHistoryResponse> getTransactions(String walletId) {
+    public List<TransactionHistoryResponse> getTransactions(String phoneNumber) {
 
         List<Transaction> transactions =
-                transactionRepository.findByFromWalletIdOrToWalletId(walletId, walletId);
+                transactionRepository.findByFromPhoneNumberOrToPhoneNumber(phoneNumber, phoneNumber);
 
         return transactions.stream()
                 .map(tx -> {
@@ -321,7 +329,7 @@ public class TransactionServiceImpl implements TransactionService {
                         case WITHDRAWAL -> "SENT";
 
                         case TRANSFER -> {
-                            if (walletId.equals(tx.getFromWalletId())) {
+                            if (phoneNumber.equals(tx.getFromPhoneNumber())) {
                                 yield "SENT";
                             } else {
                                 yield "RECEIVED";
@@ -337,6 +345,8 @@ public class TransactionServiceImpl implements TransactionService {
                             .currency(tx.getCurrency())
                             .fromWalletId(tx.getFromWalletId())
                             .toWalletId(tx.getToWalletId())
+                            .fromPhoneNumber(tx.getFromPhoneNumber())
+                            .toPhoneNumber(tx.getToPhoneNumber())
                             .role(role)
                             .createdAt(tx.getCreatedAt())
                             .completedAt(tx.getCompletedAt())
@@ -356,6 +366,8 @@ public class TransactionServiceImpl implements TransactionService {
         responseDto.setTransactionId(transaction.getTransactionId());
         responseDto.setFromWalletId(transaction.getFromWalletId());
         responseDto.setToWalletId(transaction.getToWalletId());
+        responseDto.setFromPhoneNumber(transaction.getFromPhoneNumber());
+        responseDto.setToPhoneNumber(transaction.getToPhoneNumber());
         responseDto.setAmount(transaction.getAmount());
         responseDto.setFromPhoneNumber(transaction.getFromPhoneNumber());
         responseDto.setToPhoneNumber(transaction.getToPhoneNumber());
@@ -395,6 +407,10 @@ public class TransactionServiceImpl implements TransactionService {
             dto.setFromWalletId(transaction.getFromWalletId());
 
             dto.setToWalletId(transaction.getToWalletId());
+
+            dto.setFromPhoneNumber(transaction.getFromPhoneNumber());
+
+            dto.setToPhoneNumber(transaction.getToPhoneNumber());
 
             dto.setAmount(transaction.getAmount());
 

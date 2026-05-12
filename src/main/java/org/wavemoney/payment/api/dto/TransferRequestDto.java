@@ -8,11 +8,11 @@ import java.math.BigDecimal;
 @Data
 public class TransferRequestDto {
 
-    @NotBlank(message = "From wallet id is required")
-    private String fromWalletId;
+    @NotBlank(message = "From wallet phone is required")
+    private String fromPhoneNumber;
 
-    @NotBlank(message = "To wallet id is required")
-    private String toWalletId;
+    @NotBlank(message = "To wallet phone is required")
+    private String toPhoneNumber;
 
     @Positive(message = "Amount must be greater than zero")
     private BigDecimal amount;

@@ -52,9 +52,6 @@ public class UserServiceImpl implements UserService {
                 .address(userRequestDto.getAddress())
                 .city(userRequestDto.getCity())
                 .zipCode(userRequestDto.getZipCode())
-                .frontId(userRequestDto.getFrontId())
-                .backId(userRequestDto.getBackId())
-                .selfie(userRequestDto.getSelfie())
                 .build();
 
         // Save to MongoDB
@@ -71,9 +68,6 @@ public class UserServiceImpl implements UserService {
                 .address(savedUser.getAddress())
                 .city(savedUser.getCity())
                 .zipCode(savedUser.getZipCode())
-                .frontId(savedUser.getFrontId())
-                .backId(savedUser.getBackId())
-                .selfie(savedUser.getSelfie())
                 .build();
     }
 
@@ -100,9 +94,6 @@ public UserResponseDto getUserById(String id) {
             .address(user.getAddress())
             .city(user.getCity())
             .zipCode(user.getZipCode())
-            .frontId(user.getFrontId())
-            .backId(user.getBackId())
-            .selfie(user.getSelfie())
             .build();
 
     return response;
@@ -139,9 +130,6 @@ public UserResponseDto getUserById(String id) {
                 .address(user.getAddress())
                 .city(user.getCity())
                 .zipCode(user.getZipCode())
-                .frontId(user.getFrontId())
-                .backId(user.getBackId())
-                .selfie(user.getSelfie())
                 .build();
 
         return response;

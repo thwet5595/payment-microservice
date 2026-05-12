@@ -13,7 +13,7 @@ public class DepositRequestDto {
 
     private String phoneNumber;
 
-    private String walletId;
+//    private String walletId;
 
     private BigDecimal amount;
 
