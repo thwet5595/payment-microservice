@@ -258,12 +258,12 @@ public class TransactionServiceImpl implements TransactionService {
 
         Wallet wallet = walletCreateRepository
                 .findByPhoneNumber(withdrawRequestDto.getPhoneNumber())
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+                .orElseThrow(() -> new BadRequestException("Wallet not found"));
 
         if (wallet.getBalance().compareTo(
                 withdrawRequestDto.getAmount()) < 0) {
 
-            throw new RuntimeException("Insufficient balance");
+            throw new BadRequestException("Insufficient balance");
         }
 
         wallet.setBalance(
@@ -364,7 +364,7 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponseDto transactionDetails(String transactionId) {
 
         Transaction transaction = transactionRepository.findByTransactionId(transactionId)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+                .orElseThrow(() -> new BadRequestException("Transaction not found"));
 
         // Map the transaction entity to your response DTO
         TransactionResponseDto responseDto = new TransactionResponseDto();

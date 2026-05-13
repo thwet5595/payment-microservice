@@ -10,6 +10,7 @@ import org.wavemoney.payment.api.dto.WalletRequestDto;
 import org.wavemoney.payment.api.dto.WalletResponseDto;
 import org.wavemoney.payment.api.dto.WalletSummaryResponseDto;
 import org.wavemoney.payment.api.exception.common.ResourceNotFoundException;
+import org.wavemoney.payment.api.exception.validation.BadRequestException;
 import org.wavemoney.payment.api.model.Transaction;
 import org.wavemoney.payment.api.model.Wallet;
 import org.wavemoney.payment.api.model.enums.TransactionType;
@@ -36,11 +37,22 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
     @Override
     public WalletResponseDto createWallet(WalletRequestDto walletRequestDto) {
 
+        // Check existing wallet by phone number
+        boolean walletExists =
+                walletCreateRepository.existsByPhoneNumber(
+                        walletRequestDto.getPhoneNumber());
+
+        if (walletExists) {
+            throw new BadRequestException(
+                    "Wallet already exists for phone number: "
+                            + walletRequestDto.getPhoneNumber());
+        }
+
         Wallet wallet = new Wallet();
 
         wallet.setWalletId(UUID.randomUUID().toString());
         wallet.setUserId(walletRequestDto.getUserId());
-        wallet.setPhoneNumber(walletRequestDto.getPhoneNumber());//where getUserId came from
+        wallet.setPhoneNumber(walletRequestDto.getPhoneNumber());
         wallet.setBalance(BigDecimal.ZERO);
         wallet.setCurrency("MMK");
         wallet.setStatus("ACTIVE");
@@ -50,16 +62,14 @@ public class WalletCreateServicesImpl implements WalletCreateServices {
         // Save to MongoDB
         Wallet savedWallet = walletCreateRepository.save(wallet);
 
-        // Convert Entity -> DTO
+        // Entity -> DTO
         WalletResponseDto dto = new WalletResponseDto();
-//
-//        dto.setId(savedWallet.getId());
+
         dto.setWalletId(savedWallet.getWalletId());
         dto.setUserId(savedWallet.getUserId());
         dto.setPhoneNumber(savedWallet.getPhoneNumber());
         dto.setBalance(savedWallet.getBalance());
         dto.setCurrency(savedWallet.getCurrency());
-
         dto.setStatus(savedWallet.getStatus());
 
         return dto;
