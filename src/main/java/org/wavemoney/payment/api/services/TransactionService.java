@@ -8,16 +8,16 @@ import java.util.Optional;
 
 @Service
 public interface TransactionService{
-    DepositResponseDto deposit(
-            DepositRequestDto request
-    );
+    DepositResponseDto deposit( DepositRequestDto request);
 
     TransferResponseDto transferMoney(TransferRequestDto request);
 
     TransactionResponseDto withdrawMoney(WithdrawRequestDto withdrawRequestDto);
 
     List<TransactionHistoryResponse> getTransactions(String phoneNumber);
+
     TransactionResponseDto transactionDetails(String transactionId);
+
     List<TransactionResponseDto> getDailyTransactions();
 
 }

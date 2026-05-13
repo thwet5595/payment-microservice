@@ -25,6 +25,7 @@ public class TransactionHistoryResponse {
 
         private String fromWalletId;
         private String toWalletId; // ⭐ ADD THIS (important for transfer role detection)
+        private String description;
 
         private String fromPhoneNumber;
         private String toPhoneNumber;

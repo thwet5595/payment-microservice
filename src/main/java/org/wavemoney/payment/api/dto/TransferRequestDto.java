@@ -19,4 +19,6 @@ public class TransferRequestDto {
 
     @NotBlank(message = "Currency is required")
     private String currency;
+
+    private String description;
 }
