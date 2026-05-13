@@ -32,7 +32,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private WalletCreateRepository walletCreateRepository;
 
-    @CacheEvict(value = "wallets", key = "#request.walletId")
+    @CacheEvict(value = "wallets", key = "#request.phoneNumber")
     @Override
     @Transactional
     public DepositResponseDto deposit(DepositRequestDto request) {
@@ -76,6 +76,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .currency(request.getCurrency())
                 .type(TransactionType.DEPOSIT)
                 .status(TransactionStatus.PENDING)
+                .description("Deposit money to wallet")
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -112,6 +113,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .balance(wallet.getBalance())
                 .status(transaction.getStatus().name())
                 .type(transaction.getType().name())
+                .description(transaction.getDescription())
                 .createdAt(transaction.getCreatedAt())
                 .completedAt(transaction.getCompletedAt())
                 .build();
@@ -136,7 +138,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         // find both wallets
         Wallet sender = walletCreateRepository
-                .findByWalletId(request.getFromPhoneNumber())
+                .findByPhoneNumber(request.getFromPhoneNumber())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Sender wallet not found"
@@ -144,7 +146,7 @@ public class TransactionServiceImpl implements TransactionService {
                 );
 
         Wallet receiver = walletCreateRepository
-                .findByWalletId(request.getToPhoneNumber())
+                .findByPhoneNumber(request.getToPhoneNumber())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Receiver wallet not found"
@@ -197,6 +199,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .currency(request.getCurrency())
                 .type(TransactionType.TRANSFER)
                 .status(TransactionStatus.PENDING)
+                .description(request.getDescription())
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -232,6 +235,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .status(transaction.getStatus().name())
                 .senderBalance(sender.getBalance())
                 .receiverBalance(receiver.getBalance())
+                .description(transaction.getDescription())
                 .createdAt(transaction.getCreatedAt())
                 .completedAt(transaction.getCompletedAt())
                 .build();
@@ -253,7 +257,7 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponseDto withdrawMoney(WithdrawRequestDto withdrawRequestDto) {
 
         Wallet wallet = walletCreateRepository
-                .findByWalletId(withdrawRequestDto.getFromWalletId())
+                .findByPhoneNumber(withdrawRequestDto.getPhoneNumber())
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
         if (wallet.getBalance().compareTo(
@@ -347,6 +351,7 @@ public class TransactionServiceImpl implements TransactionService {
                             .toWalletId(tx.getToWalletId())
                             .fromPhoneNumber(tx.getFromPhoneNumber())
                             .toPhoneNumber(tx.getToPhoneNumber())
+                            .description(tx.getDescription())
                             .role(role)
                             .createdAt(tx.getCreatedAt())
                             .completedAt(tx.getCompletedAt())
@@ -374,6 +379,7 @@ public class TransactionServiceImpl implements TransactionService {
         responseDto.setCurrency(transaction.getCurrency());
         responseDto.setStatus(transaction.getStatus());
         responseDto.setType(transaction.getType());
+        responseDto.setDescription(transaction.getDescription());
         responseDto.setCreatedAt(transaction.getCreatedAt());
         responseDto.setCompletedAt(transaction.getCompletedAt());
 
@@ -423,6 +429,8 @@ public class TransactionServiceImpl implements TransactionService {
             dto.setStatus(transaction.getStatus());
 
             dto.setType(transaction.getType());
+
+            dto.setDescription(transaction.getDescription());
 
             dto.setCreatedAt(transaction.getCreatedAt());
 

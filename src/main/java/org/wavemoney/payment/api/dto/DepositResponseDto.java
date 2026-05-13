@@ -26,6 +26,8 @@ public class DepositResponseDto implements Serializable {
 
     private String phoneNumber;
 
+    private String description;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime completedAt;

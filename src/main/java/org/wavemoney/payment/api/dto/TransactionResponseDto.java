@@ -22,6 +22,8 @@ public class TransactionResponseDto {
 
     private TransactionType type;
 
+    private String description;
+
     private TransactionStatus status;
 
     private LocalDateTime createdAt;
